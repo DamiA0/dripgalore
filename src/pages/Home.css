@@ -1,0 +1,48 @@
+/* ========== Hero ========== */
+.hero {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(198, 255, 61, .35), transparent 40%),
+    radial-gradient(circle at 70% 90%, rgba(198, 255, 61, .15), transparent 35%),
+    var(--ink);
+  color: var(--paper);
+}
+.hero-inner { min-height: 68vh; display: flex; flex-direction: column; justify-content: center; padding: 4rem 0; }
+.eyebrow { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .85rem; }
+.hero h1 {
+  font-size: clamp(2.6rem, 8vw, 6rem); line-height: .95; font-weight: 900;
+  text-transform: uppercase; letter-spacing: -.03em; margin: 1rem 0 1.25rem;
+}
+.hero-sub { max-width: 46ch; color: #cfcfcf; font-size: 1.1rem; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+
+/* ========== Perks strip ========== */
+.perks ul {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem 2.5rem;
+  padding: 1.1rem 0; border-bottom: 1px solid var(--line);
+  font-size: .9rem; font-weight: 600;
+}
+.perks li::before { content: "✓ "; color: #5c8a00; }
+
+/* ========== Category tiles ========== */
+.categories { padding-top: 3.5rem; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem; }
+.section-head h2 { font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; }
+.text-link { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.tile {
+  aspect-ratio: 4 / 5; border-radius: var(--radius); padding: 1.25rem;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: .25rem;
+  color: var(--paper); transition: transform .2s; position: relative; overflow: hidden;
+}
+.tile:hover { transform: translateY(-4px); }
+.tile-label { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
+.tile-cta { font-size: .9rem; font-weight: 600; opacity: .85; }
+
+/* Placeholder colours: replaced with real photos in Phase 2 */
+.t1 { background: linear-gradient(160deg, #3b3b3b, #111); }
+.t2 { background: linear-gradient(160deg, #5c5346, #2b2620); }
+.t3 { background: linear-gradient(160deg, #3f4a5a, #1b2230); }
+.t4 { background: linear-gradient(160deg, #b9b2a7, #6d675e); }
+.t5 { background: linear-gradient(160deg, #4d5b3f, #222a1a); }
+.t6 { background: linear-gradient(160deg, #c6ff3d, #7fa61f); color: var(--ink); }
