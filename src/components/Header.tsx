@@ -63,7 +63,7 @@ export default function Header() {
           </Link>
           <Link to="/basket" className="icon-btn" aria-label={`Basket, ${basketCount} items`}>
             <BagIcon />
-            <span className="badge" aria-hidden="true">{basketCount}</span>
+            {basketCount > 0 && <span className="badge" aria-hidden="true">{basketCount}</span>}
           </Link>
         </div>
       </div>

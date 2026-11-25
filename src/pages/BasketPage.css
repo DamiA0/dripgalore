@@ -1,0 +1,56 @@
+.basket { padding: 2rem 0 3rem; }
+.basket-count { font-size: 1rem; color: var(--muted); font-weight: 600; text-transform: none; letter-spacing: 0; }
+.basket-layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 2.5rem;
+  align-items: start; margin-top: 1.5rem;
+}
+
+/* ========== Items ========== */
+.basket-list { border-top: 1px solid var(--line); }
+.basket-item {
+  display: grid; grid-template-columns: 110px 1fr auto; gap: 1.25rem;
+  padding: 1.25rem 0; border-bottom: 1px solid var(--line); align-items: start;
+}
+.basket-img { display: block; aspect-ratio: 4 / 5; border-radius: 8px; overflow: hidden; background: var(--soft); }
+.basket-details h2 { font-size: 1.05rem; font-weight: 700; }
+.basket-details h2 a:hover { text-decoration: underline; }
+.basket-variant, .basket-unit { color: var(--muted); font-size: .9rem; margin-top: .2rem; }
+.basket-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: .75rem; font-size: .9rem; }
+.basket-actions select {
+  margin-left: .4rem; padding: .35rem .6rem; border: 1px solid var(--line);
+  border-radius: 8px; font: inherit; background: var(--paper);
+}
+.basket-line-total { font-weight: 800; }
+
+/* ========== Summary ========== */
+.basket-summary {
+  position: sticky; top: calc(var(--header-h) + 1.5rem);
+  background: var(--soft); border-radius: var(--radius); padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.basket-summary h2 { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
+.free-msg { font-size: .9rem; font-weight: 600; }
+.free-msg.ok { color: #3f6b00; }
+.free-bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: -.5rem; }
+.free-bar span { display: block; height: 100%; background: var(--ink); transition: width .3s; }
+.basket-summary dl div { display: flex; justify-content: space-between; padding: .3rem 0; }
+.basket-summary dd { font-weight: 700; }
+.basket-summary .savings dd { color: #3f6b00; }
+.basket-summary .total {
+  border-top: 1px solid #d6d6d0; margin-top: .4rem; padding-top: .8rem; font-size: 1.15rem;
+}
+.checkout-btn { width: 100%; }
+.demo-note { font-size: .8rem; color: var(--muted); }
+.basket .link-btn, .basket-summary .link-btn { text-decoration: underline; font-size: .9rem; align-self: flex-start; }
+
+.basket-empty-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* ========== Mobile ========== */
+@media (max-width: 900px) {
+  .basket-layout { grid-template-columns: 1fr; }
+  .basket-summary { position: static; }
+}
+@media (max-width: 520px) {
+  .basket-item { grid-template-columns: 84px 1fr; }
+  .basket-line-total { grid-column: 2; }
+}
