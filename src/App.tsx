@@ -9,6 +9,8 @@ import ProductPage from "./pages/ProductPage";
 import NotFound from "./pages/NotFound";
 import BasketPage from "./pages/BasketPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import HelpLauncher from "./components/HelpLauncher";
+import HelpPage from "./pages/HelpPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -35,9 +37,12 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
           <Route path="/basket" element={<BasketPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/help/:topic" element={<HelpPage />} />
         </Routes>
       </main>
       <Footer />
+      <HelpLauncher />
     </>
   );
 }

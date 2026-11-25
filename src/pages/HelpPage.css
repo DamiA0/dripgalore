@@ -1,0 +1,35 @@
+.help-page { padding: 2rem 0 3rem; }
+.help-layout {
+  display: grid; grid-template-columns: 220px 1fr; gap: 2.5rem;
+  margin-top: 1.5rem; align-items: start;
+}
+.help-nav {
+  display: flex; flex-direction: column; gap: .25rem;
+  position: sticky; top: calc(var(--header-h) + 1.5rem);
+}
+.help-nav a { padding: .55rem .8rem; border-radius: 8px; font-weight: 600; color: var(--muted); }
+.help-nav a:hover { background: var(--soft); color: var(--ink); }
+.help-nav a.active { background: var(--ink); color: var(--paper); }
+
+.faq-list details { border-bottom: 1px solid var(--line); padding: 1rem 0; }
+.faq-list summary { font-weight: 700; cursor: pointer; }
+.faq-list p { margin-top: .6rem; color: #444; max-width: 65ch; }
+
+.measure-tips { display: grid; gap: .4rem; margin-bottom: 1.5rem; color: #444; }
+.table-scroll { overflow-x: auto; }
+.size-table { width: 100%; border-collapse: collapse; margin: .75rem 0 2rem; font-size: .95rem; }
+.size-table caption { text-align: left; font-weight: 800; text-transform: uppercase; margin-bottom: .5rem; }
+.size-table th, .size-table td { padding: .6rem .75rem; border-bottom: 1px solid var(--line); text-align: left; }
+.size-table thead th { background: var(--soft); }
+
+.help-cta {
+  margin-top: 2.5rem; background: var(--soft); border-radius: var(--radius); padding: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.help-cta h2 { font-size: 1.1rem; font-weight: 800; }
+.help-cta p { color: var(--muted); }
+
+@media (max-width: 800px) {
+  .help-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+  .help-nav { position: static; flex-direction: row; flex-wrap: wrap; }
+}

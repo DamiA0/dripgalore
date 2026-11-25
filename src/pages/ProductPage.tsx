@@ -8,6 +8,7 @@ import { useBasket } from "../context/BasketContext";
 import NotFound from "./NotFound";
 import "./Shop.css";
 import "./ProductPage.css";
+import HelpDrawer from "../components/HelpDrawer";
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -26,6 +27,7 @@ function ProductDetails({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
   const [added, setAdded] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     document.title = `${product.name} | DripGalore`;
@@ -159,6 +161,10 @@ function ProductDetails({ product }: { product: Product }) {
             <li>✓ Demo store: checkout uses Stripe test mode, no real payments</li>
           </ul>
 
+          <button type="button" className="btn btn-outline pd-help" onClick={() => setHelpOpen(true)}>
+            <span aria-hidden="true">💬</span> Need help with this item?
+          </button>
+
           <div className="pd-accordion">
             <details open>
               <summary>Description</summary>
@@ -190,6 +196,7 @@ function ProductDetails({ product }: { product: Product }) {
         </section>
       )}
 
+    <HelpDrawer open={helpOpen} onClose={() => setHelpOpen(false)} product={product} />
       {added && (
         <div className="pd-toast" role="status">
           ✓ Added to basket <Link to="/basket">View basket</Link>
