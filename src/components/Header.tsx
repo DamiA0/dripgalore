@@ -3,11 +3,12 @@ import { Link, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import { SECTIONS } from "../data/navigation";
 import { BagIcon, CloseIcon, MenuIcon, SearchIcon, UserIcon } from "./Icons";
+import { useBasket } from "../context/BasketContext";
 import "./Header.css";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const basketCount = 0; // becomes the real basket count in Phase 4
+  const { count: basketCount } = useBasket();
 
   return (
     <header className="site-header">
