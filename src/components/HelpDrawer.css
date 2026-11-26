@@ -48,3 +48,13 @@ body:has(dialog[open]) { overflow: hidden; } /* stop the page scrolling behind *
   font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); transition: transform .15s;
 }
 .help-launcher:hover { transform: translateY(-2px); }
+
+/* Message rows and AI label */
+.bubble-wrap { display: flex; flex-direction: column; gap: .2rem; }
+.bubble-wrap.bot { align-items: flex-start; }
+.bubble-wrap.user { align-items: flex-end; }
+.bubble-wrap .bubble { max-width: 85%; }
+.bubble-label { font-size: .7rem; color: var(--muted); padding-left: .4rem; }
+.bubble.thinking { color: var(--muted); font-style: italic; animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .45; } }
+.chip-btn:disabled { opacity: .5; cursor: not-allowed; }

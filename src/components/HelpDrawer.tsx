@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../data/products";
-import { scriptedAnswer } from "../utils/help";
+import { FALLBACK_ANSWER, askAI, scriptedMatch } from "../utils/help";
 import { formatPrice } from "../utils/catalogue";
 import ProductImage from "./ProductImage";
 import { CloseIcon } from "./Icons";
@@ -10,6 +10,7 @@ import "./HelpDrawer.css";
 interface Message {
   from: "bot" | "user";
   text: string;
+  ai?: boolean; // true if the answer came from the AI
 }
 
 const GENERAL_SUGGESTIONS = [
@@ -22,7 +23,7 @@ const GENERAL_SUGGESTIONS = [
 const ITEM_SUGGESTIONS = [
   "What's it made of?",
   "How does it fit?",
-  "What sizes does it come in?",
+  "Is it warm enough for winter?",
   "How do I wash it?",
 ];
 
@@ -36,6 +37,7 @@ export default function HelpDrawer({ open, onClose, product }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState("");
+  const [thinking, setThinking] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => [
     {
       from: "bot",
@@ -56,13 +58,29 @@ export default function HelpDrawer({ open, onClose, product }: Props) {
   // Keep the newest message in view
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [messages]);
+  }, [messages, thinking]);
 
-  function ask(question: string) {
+  async function ask(question: string) {
     const q = question.trim();
-    if (!q) return;
-    setMessages((m) => [...m, { from: "user", text: q }, { from: "bot", text: scriptedAnswer(q, product) }]);
+    if (!q || thinking) return;
     setInput("");
+    setMessages((m) => [...m, { from: "user", text: q }]);
+
+    // 1. Instant scripted answer if we have one
+    const scripted = scriptedMatch(q, product);
+    if (scripted) {
+      setMessages((m) => [...m, { from: "bot", text: scripted }]);
+      return;
+    }
+
+    // 2. Otherwise ask the AI (free Cloudflare Workers AI)
+    setThinking(true);
+    const aiAnswer = await askAI(q, product);
+    setThinking(false);
+    setMessages((m) => [
+      ...m,
+      aiAnswer ? { from: "bot", text: aiAnswer, ai: true } : { from: "bot", text: FALLBACK_ANSWER },
+    ]);
   }
 
   const suggestions = product ? ITEM_SUGGESTIONS : GENERAL_SUGGESTIONS;
@@ -99,14 +117,22 @@ export default function HelpDrawer({ open, onClose, product }: Props) {
 
         <div className="help-messages" aria-live="polite">
           {messages.map((m, i) => (
-            <p key={i} className={`bubble ${m.from}`}>{m.text}</p>
+            <div key={i} className={`bubble-wrap ${m.from}`}>
+              <p className={`bubble ${m.from}`}>{m.text}</p>
+              {m.ai && <span className="bubble-label">AI answer · may be wrong</span>}
+            </div>
           ))}
+          {thinking && (
+            <div className="bubble-wrap bot">
+              <p className="bubble bot thinking">Thinking…</p>
+            </div>
+          )}
           <div ref={endRef} />
         </div>
 
         <div className="help-suggestions">
           {suggestions.map((s) => (
-            <button key={s} type="button" className="chip-btn" onClick={() => ask(s)}>
+            <button key={s} type="button" className="chip-btn" disabled={thinking} onClick={() => ask(s)}>
               {s}
             </button>
           ))}
@@ -128,7 +154,7 @@ export default function HelpDrawer({ open, onClose, product }: Props) {
             maxLength={300}
             autoComplete="off"
           />
-          <button type="submit" className="btn" disabled={!input.trim()}>Send</button>
+          <button type="submit" className="btn" disabled={!input.trim() || thinking}>Send</button>
         </form>
 
         <nav className="help-links" aria-label="Help topics">
