@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "dripgalore",
+  "compatibility_date": "2026-11-25",
+  "main": "./worker/index.ts",
+  "upload_source_maps": true,
+  "observability": { "enabled": true },
+  "assets": {
+    // Any unknown page (e.g. /product/men-boxy-logo-tee) loads the React app
+    "not_found_handling": "single-page-application",
+    // Anything starting /api/ goes to our back end first
+    "run_worker_first": ["/api/*"]
+  }
+}
