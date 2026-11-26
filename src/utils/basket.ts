@@ -1,4 +1,4 @@
-import { PRODUCTS, type Product } from "../data/products";
+import type { Product } from "../data/products";
 import type { BasketItem } from "../context/BasketContext";
 
 export const FREE_DELIVERY_FROM = 5000; // £50.00
@@ -10,9 +10,9 @@ export interface BasketLine extends BasketItem {
 }
 
 // Join each basket item with its product (skips anything no longer in the catalogue)
-export function basketLines(items: BasketItem[]): BasketLine[] {
+export function basketLines(items: BasketItem[], products: Product[]): BasketLine[] {
   return items.flatMap((item) => {
-    const product = PRODUCTS.find((p) => p.id === item.productId);
+    const product = products.find((p) => p.id === item.productId);
     return product ? [{ ...item, product, lineTotal: product.price * item.qty }] : [];
   });
 }

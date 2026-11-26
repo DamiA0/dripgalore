@@ -6,10 +6,13 @@ import ProductImage from "../components/ProductImage";
 import { FREE_DELIVERY_FROM, basketLines, basketTotals } from "../utils/basket";
 import { formatPrice } from "../utils/catalogue";
 import "./BasketPage.css";
+import { useProducts } from "../context/ProductsContext";
+import { LoadingBlock } from "../components/Status";
 
 export default function BasketPage() {
   const { items, count, setQty, remove, clear } = useBasket();
-  const lines = basketLines(items);
+  const { products, loading } = useProducts();
+  const lines = basketLines(items, products);
   const totals = basketTotals(lines);
 
   useEffect(() => {
@@ -19,6 +22,7 @@ export default function BasketPage() {
     };
   }, []);
 
+  if (loading) return <div className="container"><LoadingBlock label="Loading basket…" /></div>;
   if (lines.length === 0) {
     return (
       <section className="container placeholder">

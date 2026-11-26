@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { COLOURS, PRODUCTS, type ColourKey, type Product } from "../data/products";
+import { COLOURS, type ColourKey, type Product } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
+import { LoadError, LoadingBlock } from "../components/Status";
 import ProductImage from "../components/ProductImage";
 import ProductCard from "../components/ProductCard";
 import { categoryLabel, formatPrice, sectionLabel } from "../utils/catalogue";
@@ -12,7 +14,12 @@ import HelpDrawer from "../components/HelpDrawer";
 
 export default function ProductPage() {
   const { slug } = useParams();
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const { products, loading, error, reload } = useProducts();
+
+  if (loading) return <div className="container"><LoadingBlock label="Loading product…" /></div>;
+  if (error) return <div className="container"><LoadError onRetry={reload} /></div>;
+
+  const product = products.find((p) => p.slug === slug);
   if (!product) return <NotFound />;
   // "key" resets the choices when you move to a different product
   return <ProductDetails key={product.id} product={product} />;
@@ -20,6 +27,7 @@ export default function ProductPage() {
 
 function ProductDetails({ product }: { product: Product }) {
   const { add } = useBasket();
+  const { products } = useProducts();
   const [colour, setColour] = useState<ColourKey>(product.colours[0]);
   const [size, setSize] = useState<string | null>(
     product.sizes.length === 1 ? product.sizes[0] : null
@@ -37,7 +45,7 @@ function ProductDetails({ product }: { product: Product }) {
   }, [product.name]);
 
   const onSale = product.wasPrice !== undefined;
-  const related = PRODUCTS.filter(
+  const related = products.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 4);
 

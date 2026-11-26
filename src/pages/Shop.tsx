@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { COLOURS, PRODUCTS, SIZE_ORDER, type ColourKey } from "../data/products";
+import { COLOURS, SIZE_ORDER, type ColourKey } from "../data/products";
 import { SECTIONS } from "../data/navigation";
 import {
   SORT_OPTIONS, categoryLabel, filterProducts, paginate, readFilters, sortProducts,
 } from "../utils/catalogue";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "../components/ProductCard";
 import Filters from "../components/Filters";
 import GridToggle from "../components/GridToggle";
 import Pagination from "../components/Pagination";
+import { LoadError, LoadingBlock } from "../components/Status";
 import "./Shop.css";
 
 const PER_PAGE = 12;
@@ -24,12 +26,13 @@ export default function Shop() {
   const [params, setParams] = useSearchParams();
   const [cols, setCols] = useLocalStorage<number>("dg-grid", 3);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const { products, loading, error, reload } = useProducts();
 
   const section = SECTIONS.find((s) => s.slug === gender);
   const filters = readFilters(params, section?.slug, category);
 
   // Products in this section/category, used to build the size and colour options
-  const scope = PRODUCTS.filter(
+  const scope = products.filter(
     (p) =>
       (!filters.section || p.section === filters.section) &&
       (!filters.category || p.category === filters.category)
@@ -39,7 +42,7 @@ export default function Shop() {
     scope.some((p) => p.colours.includes(c))
   );
 
-  const results = sortProducts(filterProducts(PRODUCTS, filters), filters.sort);
+  const results = sortProducts(filterProducts(products, filters), filters.sort);
   const { items, totalPages, current } = paginate(results, filters.page, PER_PAGE);
   const activeCount = filters.sizes.length + filters.colours.length + (filters.price ? 1 : 0);
 
@@ -84,7 +87,7 @@ export default function Shop() {
 
       <div className="shop-head">
         <h1 className="page-title">{title}</h1>
-        <p className="result-count">{results.length} products</p>
+        {!loading && !error && <p className="result-count">{results.length} products</p>}
       </div>
 
       <div className="shop-toolbar">
@@ -122,7 +125,11 @@ export default function Shop() {
         />
 
         <section aria-label="Products">
-          {items.length === 0 ? (
+          {loading ? (
+            <LoadingBlock label="Loading products…" />
+          ) : error ? (
+            <LoadError onRetry={reload} />
+          ) : items.length === 0 ? (
             <div className="empty">
               <p>No products match those filters.</p>
               <button type="button" className="btn" onClick={clearFilters}>Clear filters</button>
@@ -137,7 +144,9 @@ export default function Shop() {
             </ul>
           )}
 
-          <Pagination current={current} total={totalPages} onChange={goToPage} />
+          {!loading && !error && (
+            <Pagination current={current} total={totalPages} onChange={goToPage} />
+          )}
         </section>
       </div>
     </div>

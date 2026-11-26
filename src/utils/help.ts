@@ -1,6 +1,6 @@
 import { COLOURS, type Product } from "../data/products";
 import { FAQS } from "../data/faq";
-import { categoryLabel, formatPrice } from "./catalogue";
+import { formatPrice } from "./catalogue";
 
 export const FALLBACK_ANSWER =
   "I'm not sure about that one yet. I can help with sizing, delivery, returns, payments and product details. Try one of the suggestions below, or browse the Help centre.";
@@ -80,29 +80,13 @@ export function scriptedAnswer(question: string, product?: Product): string {
   return scriptedMatch(question, product) ?? FALLBACK_ANSWER;
 }
 
-// The product details sent to the AI
-function productFacts(p: Product) {
-  return {
-    name: p.name,
-    category: categoryLabel(p.category),
-    price: p.wasPrice
-      ? `${formatPrice(p.price)} (on sale, was ${formatPrice(p.wasPrice)})`
-      : formatPrice(p.price),
-    description: p.description,
-    fit: p.fit,
-    fabric: p.fabric,
-    sizes: p.sizes,
-    colours: p.colours.map((c) => COLOURS[c].name),
-  };
-}
-
 // Ask the back end's AI. Returns null if it's unavailable for any reason.
 export async function askAI(question: string, product?: Product): Promise<string | null> {
   try {
     const res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, product: product ? productFacts(product) : undefined }),
+      body: JSON.stringify({ question, productId: product?.id }),
     });
     if (!res.ok) return null;
     const data = (await res.json()) as { answer?: string | null };
